@@ -7,7 +7,7 @@ argvs = sys.argv
 argc = len(argvs)
 
 if (argc < 2):
-    print ("type an input")
+    print "type an input"
     sys.exit();
 
 filename = argvs[1];
@@ -26,18 +26,11 @@ flag_pm = 0
 symbol_obital=""
 atom = ""
 
-content=[]
-nextskip = 0
-
 atom += "{\n"
 
-label = ""
 numbers = []
 
 for i in range(0,len(lines)):
-    if (nextskip == 1):
-        nextskip = 0
-        continue
     ll = lines[i]
     if (len(ll) >= len(stop) and ll[0:len(stop)] == stop):
         if (len(numbers) > 0):
@@ -93,7 +86,11 @@ for i in range(0,len(lines)):
     elif (flag_lar and len(ll) >= 29 and ll[0:5] == "     ") :   ##
         if (len(ll) == 0): continue
         # if buffer is used, flash
-        if (len(numbers) > 0):
+        if (ll[29] == plus_minus):
+          flag_pm = 1
+        else:
+          flag_pm = 0
+        if (flag_pm and len(numbers) > 0):
           m = len(numbers[0])
           for p in range(1,m):
             atom += "      \"prim\" : ["
@@ -110,11 +107,12 @@ for i in range(0,len(lines)):
             atom += "      \"angular\" : \"" + symbol_obital + "\",\n"
           atom = atom[:-23]
           numbers=[]
-        else:
+        elif (flag_pm) :
           atom += "    {\n"
-        symbol_obital = ll[28].lower()
-        atom += "      \"angular\" : \"" + symbol_obital + "\",\n"
-    elif (flag_lar and ll[0:3] == "   "):
+        if (flag_pm) :
+          symbol_obital = ll[28].lower()
+          atom += "      \"angular\" : \"" + symbol_obital + "\",\n"
+    elif (flag_pm and flag_lar and ll[0:3] == "   "):
         if (len(ll) == 0): continue
         tmp = ll[5:].split()
         numbers.append(tmp)
