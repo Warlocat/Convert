@@ -9,7 +9,7 @@ if (argc < 2):
     print ("type an input")
     sys.exit();
     
-flag = 0
+flag = 1
 
 filename = argvs[1];
 fp = open(filename, "r");
@@ -34,13 +34,17 @@ for i in lines:
         prevshell = ""
         prevprims = []
 
-        if i[3:5] != "H\"":
+        if (flag):
+            out.append(i)
+            out.append("    {")
+            flag = 0
+        else:
             out = out[:-1]
             out.append("    }")
             out.append("  ],")
             done.clear()
-        out.append(i)
-        out.append("    {")
+            out.append(i)
+            out.append("    {")
 
     elif len(i) > len(angkey) and i[0:len(angkey)] == angkey:
         currshell = i[len(angkey)]
